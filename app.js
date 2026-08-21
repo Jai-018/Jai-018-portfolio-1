@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
     animateTrail();
     
     // Enhanced Cursor hover effects with magnetic behavior
-    const interactiveElements = document.querySelectorAll('a, button, .skill-item, .project-card, .social-link, .nav-link, .highlight-item, .cert-card, .education-card, .timeline-content');
+    const interactiveElements = document.querySelectorAll('a, button, .skill-item, .project-card, .social-link, .nav-link, .highlight-item, .cert-card, .education-card, .timeline-content, .why-card, .whatsapp-btn');
     
     interactiveElements.forEach(element => {
         element.addEventListener('mouseenter', () => {
@@ -88,6 +88,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (element.classList.contains('project-card')) {
                 cursor.classList.add('cursor-text');
                 cursorTrail.textContent = 'VIEW';
+            } else if (element.classList.contains('why-card')) {
+                cursor.classList.add('cursor-text');
+                cursorTrail.textContent = 'SPEED';
+            } else if (element.classList.contains('whatsapp-btn')) {
+                cursor.classList.add('cursor-text');
+                cursorTrail.textContent = 'CHAT';
             } else if (element.classList.contains('social-link')) {
                 cursor.classList.add('cursor-text');
                 cursorTrail.textContent = 'CONNECT';
@@ -225,15 +231,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Check if clicked element is the CTA button
+        // Check if clicked element is a CTA button
         if (e.target.classList.contains('cta-btn') || e.target.closest('.cta-btn')) {
             e.preventDefault();
             e.stopPropagation();
             
-            console.log('CTA button clicked');
-            const success = smoothScrollTo('#projects');
+            const btn = e.target.classList.contains('cta-btn') ? e.target : e.target.closest('.cta-btn');
+            const target = btn.getAttribute('data-target') || (btn.id === 'hire-me-btn' ? '#contact' : '#projects');
+            
+            console.log('CTA button clicked, target:', target);
+            const success = smoothScrollTo(target);
             if (success) {
-                showNotification('Viewing my featured projects', 'success');
+                const label = target === '#contact' ? 'Let\'s talk about your project' : 'Viewing client projects & work';
+                showNotification(label, 'success');
             }
         }
         
@@ -354,8 +364,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
     
     // Observe elements for animations
-    const animatedElements = document.querySelectorAll('.section-header, .skill-category, .project-card, .timeline-item, .contact-info, .contact-form');
-    const sections = document.querySelectorAll('#about, #education, #certifications');
+    const animatedElements = document.querySelectorAll('.section-header, .skill-category, .project-card, .timeline-item, .contact-info, .contact-form, .why-card');
+    const sections = document.querySelectorAll('#about, #why-me, #education, #certifications');
     
     animatedElements.forEach((element, index) => {
         element.classList.add('fade-in');
@@ -371,14 +381,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function animateAboutSection() {
         console.log('Animating about section');
         
-        // Typewriter effect for main text
+        // Typewriter effect for main text if present
         const typewriterText = document.querySelector('.typewriter-text');
         if (typewriterText && !typewriterText.dataset.animated) {
             typewriterText.dataset.animated = 'true';
             typewriterEffect(typewriterText, 50);
         }
         
-        // Counter animation for experience number
+        // Counter animation for experience number if present
         const experienceNumber = document.querySelector('.highlight-number');
         if (experienceNumber && !experienceNumber.dataset.animated) {
             experienceNumber.dataset.animated = 'true';
@@ -392,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 item.dataset.animated = 'true';
                 setTimeout(() => {
                     item.classList.add('slide-in-left', 'visible');
-                }, index * 200);
+                }, index * 150);
             }
         });
     }
